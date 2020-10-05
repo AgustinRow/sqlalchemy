@@ -5,15 +5,9 @@ from flask_marshmallow import Marshmallow
 app=Flask (__name__)
 
 #condigure db
-#db= yaml.load(open('db.yaml '))
-app.config['SQLALCHEMY_DATABASE_URI']='mysql+pysqml://root:dameunpass@localhost/flaskapp'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:dameunpass@localhost/flaskapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
 
-
-#db['mysql_host']
-#app.config['MYSQL_USER']=db['mysql_user']
-#app.config['MYSQL_PASSWORD']=db['mysql_password']
-#app.config['MYSQL_DB']=db['mysql_db']
 
 db= SQLAlchemy(app)
 ma= Marshmallow(app)
@@ -38,7 +32,7 @@ users_schema= UserSchema(many=True)
 
 
 
-@app.route('/', methods=[ 'POST'])
+@app.route('/', methods=[ 'GET','POST'])
 def index():
     if request.method=='POST':
         #fetch data
@@ -48,7 +42,7 @@ def index():
         new_user= User(name, email)
         db.session.add(new_user)
         db.session.commit()
-        return 'succes'   
+        return user_schema.jsonify(new_user)  
     return render_template("index.html")
 
 if __name__=='__main__':
